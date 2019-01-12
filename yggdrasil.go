@@ -104,8 +104,17 @@ type Property struct {
 	Value string `json:"value"`
 }
 
+const defaultClientToken = "a05445dc981f14a03660b07bddfcf52dd7725d66"
+
+func (client *Client) setDefaults() {
+	if client.ClientToken == "" {
+		client.ClientToken = defaultClientToken
+	}
+}
+
 // Authenticate attempts to authenticate with Yggdrasil.
 func (client *Client) Authenticate(username, password, gameName string, gameVersion int) (*AuthenticationResponse, *Error) {
+	client.setDefaults()
 	authRequest := &AuthenticationRequest{
 		Agent: Agent{
 			Name:    gameName,
@@ -166,6 +175,7 @@ func (client *Client) Authenticate(username, password, gameName string, gameVers
 
 // Refresh attempts to refresh an existing access/client token pair to get a new valid access token.
 func (client *Client) Refresh() (*RefreshResponse, *Error) {
+	client.setDefaults()
 	refreshRequest := &RefreshRequest{
 		AccessToken: client.AccessToken,
 		ClientToken: client.ClientToken,
@@ -222,6 +232,7 @@ func (client *Client) Refresh() (*RefreshResponse, *Error) {
 
 // Validate attempts to check whether or not an existing access/client token pair is valid.
 func (client *Client) Validate() (bool, *Error) {
+	client.setDefaults()
 	validateRequest := &ValidateRequest{
 		AccessToken: client.AccessToken,
 		ClientToken: client.ClientToken}
@@ -269,6 +280,7 @@ func (client *Client) Validate() (bool, *Error) {
 
 // Signout attempts to signout of a legacy Minecraft account.
 func (client *Client) Signout(username, password string) (bool, *Error) {
+	client.setDefaults()
 	signoutRequest := &SignoutRequest{
 		Username: username,
 		Password: password}
@@ -313,6 +325,7 @@ func (client *Client) Signout(username, password string) (bool, *Error) {
 
 // Invalidate attempts to invalidate an existing access/client token pair.
 func (client *Client) Invalidate() *Error {
+	client.setDefaults()
 	invalidateRequest := &InvalidateRequest{
 		AccessToken: client.AccessToken,
 		ClientToken: client.ClientToken}
